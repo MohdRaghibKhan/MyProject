@@ -31,43 +31,47 @@ public class HomeController {
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
-	 BCryptPasswordEncoder bCryptPasswordEncoder;
+	BCryptPasswordEncoder bCryptPasswordEncoder;
+
 	@RequestMapping("/")
 	public String home(Model model) {
 		System.out.println("home page");
 		model.addAttribute("tittle", "Home - Smart Contact Manager");
 		return "home";
 	}
+
 	@RequestMapping("/about")
 	public String about(Model model) {
 		System.out.println("about page");
 		model.addAttribute("tittle", "About page");
 		return "about";
 	}
+
 	@RequestMapping("/signup")
 	public String signup(Model model) {
 		System.out.println("signup page");
 		model.addAttribute("tittle", "Register- Smart Contact Manager");
-		model.addAttribute("user",new User());
+		model.addAttribute("user", new User());
 		return "signup";
 	}
+
 	@PostMapping("/do_register")
 	public String registerUser(@Valid @ModelAttribute("user") User user, @RequestParam("imagePhoto") MultipartFile file,
-			BindingResult bindingResult,@RequestParam(value = "agreement", defaultValue = "false") boolean agreement,
-	        Model model, HttpSession httpSession) throws Exception {
-	    try {
-	    	 if (!agreement) {
-	 	        throw new Exception("Please Accept Terms & Conditions");
-	 	    }
-	 	    if (bindingResult.hasErrors()) {
-	 	        // Populate the model with the user object and binding result
-	 	        model.addAttribute("user", user);
-	 	        return "signup"; // Return the signup page to display errors
-	 	    }
+			BindingResult bindingResult, @RequestParam(value = "agreement", defaultValue = "false") boolean agreement,
+			Model model, HttpSession httpSession) throws Exception {
+		try {
+			if (!agreement) {
+				throw new Exception("Please Accept Terms & Conditions");
+			}
+			if (bindingResult.hasErrors()) {
+				// Populate the model with the user object and binding result
+				model.addAttribute("user", user);
+				return "signup"; // Return the signup page to display errors
+			}
 //	 	    saving image..
-	 	   if (file.isEmpty()) {
+			if (file.isEmpty()) {
 				user.setImage_url("contact.png");
-				System.out.println(">>>>>>"+user.getImage_url());
+				System.out.println(">>>>>>" + user.getImage_url());
 //				throw new Exception("File is empty");
 
 			} else {
@@ -78,26 +82,27 @@ public class HomeController {
 				System.out.println("File is uploaded");
 
 			}
-	        user.setRole("ROLE_USER");
-	        user.setEnabled(true);
-	        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-	        User save = userRepository.save(user);
-	        System.out.println(save);
-	        httpSession.setAttribute("title", "Register - Smart Contact Manager");
-	        httpSession.setAttribute("user", user);
-	        httpSession.setAttribute("message", new Message("Registered Successfully", "alert-success"));
-	        return "signup";
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        model.addAttribute("user", user);
-	        httpSession.setAttribute("message", new Message("Please Accept Terms & Conditions", "alert-danger"));
-	        return "signup";
-	    }
+			user.setRole("ROLE_USER");
+			user.setEnabled(true);
+			user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+			User save = userRepository.save(user);
+			System.out.println(save);
+			httpSession.setAttribute("title", "Register - Smart Contact Manager");
+			httpSession.setAttribute("user", user);
+			httpSession.setAttribute("message", new Message("Registered Successfully", "alert-success"));
+			return "signup";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("user", user);
+			httpSession.setAttribute("message", new Message("Please Accept Terms & Conditions", "alert-danger"));
+			return "signup";
+		}
 	}
+
 	@GetMapping("/signin")
 	public String customLogin(Model model) {
-		model.addAttribute("tittle","Login page - Smart Contact Manager");
+		model.addAttribute("tittle", "Login page - Smart Contact Manager");
 		return "login";
 	}
-	
+
 }
