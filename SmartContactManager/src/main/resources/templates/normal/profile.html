@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="normal/UserBase::layout(~{::section})">
+
+<head>
+	<meta charset="UTF-8">
+	<title>about</title>
+</head>
+
+<body>
+	<section>
+		<div class="container">
+			<div class="card">
+				<div class="card-body">
+					<div class="alert" th:classappend="${session.message.type}" role="alert" th:if="${session.message}">
+						<p th:text="${session.message.content}" class="text-center"></p>
+						<th:block th:text="${@sessionHelper.removeMessageFromSession()}"></th:block>
+					</div>
+					<table class="table">
+						<div class="text-center">
+							<img src="" style="height: 200px; width: 200px;" class="my_profile_picture mt-2"
+								th:src="@{'/img/'+${user.image_url}}" alt="profile photo" />
+						</div>
+						<h1 class="text-center mt-2" th:text="${user.name}"></h1>
+						<thead class="thead-dark text-center">
+							<tr>
+								<th scope="col">#USERID</th>
+								<th scope="col">SCMUSER<span th:text="${user.uId}"></span></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row">Email</th>
+								<td><span th:text="${user.email}"></span></td>
+							</tr>
+							<tr>
+								<th scope="row">Role</th>
+								<td><span th:text="${user.role}"></span></td>
+							</tr>
+							<tr>
+								<th scope="row">Account Status</th>
+								<td><span th:text="${user.enabled}"></span></td>
+							</tr>
+							<tr>
+								<th scope="row">About You</th>
+								<td><span th:text="${user.about}"></span></td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="container mt-4 text-center">
+						<a class="btn btn-danger" th:onclick="|deleteUser(${user.uId})|"
+							style="display: inline-block; margin-right: 5px;">Delete</a>
+
+						<form action="#" style="display: inline-block;">
+							<button type="submit" class="btn btn-primary">Update</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+
+</html>
